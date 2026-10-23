@@ -70,7 +70,7 @@
             width: 100%;
             max-width: 1100px;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
@@ -89,14 +89,14 @@
 
         #fullTableau {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 10px;
             width: 100%;
         }
 
         #fullTableau .card-wrapper {
             width: 100%;
-            height: 180px;
+            height: 170px;
         }
 
         .card-wrapper {
@@ -109,33 +109,18 @@
             width: 100%;
             height: 100%;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
             border: 2px solid var(--accent-gold);
             box-sizing: border-box;
             overflow: hidden;
-            background-color: #fff;
-            display: flex;
-            flex-direction: column;
+            background-color: #000;
         }
 
         .card-inner img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: block;
-        }
-
-        .card-name-tag {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            color: var(--accent-gold);
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-align: center;
-            padding: 3px 0;
-            border-top: 1px solid var(--accent-gold);
         }
 
         .action-btn {
@@ -161,7 +146,7 @@
 <body>
 
     <h1>Aurys Cigánykártya</h1>
-    <div class="subtitle">Mátrix Labor • Eredeti Klasszikus Pakli</div>
+    <div class="subtitle">Mátrix Labor • Eredeti Saját Pakli</div>
 
     <div class="tab-container">
         <button class="tab-btn active" onclick="switchTab('quick')">3 Lapos Gyorshúzás</button>
@@ -174,44 +159,44 @@
     <button class="action-btn" onclick="reshuffleCurrentTab()">Újrakeverés / Új leosztás 𓋹</button>
 
     <script>
-        // Wikipedia/Wikimedia stabil direkt képhivatkozások a klasszikus Cigánykártyákhoz
+        // A te általad feltöltött pontos fájlnevek a GitHub repóban
         const cardsData = [
-            { name: "Szerelem", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Gypsy_card_Love.jpg/320px-Gypsy_card_Love.jpg" },
-            { name: "Szerelmes férfi", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Gypsy_card_Lover_male.jpg/320px-Gypsy_card_Lover_male.jpg" },
-            { name: "Szerelmes nő", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Gypsy_card_Lover_female.jpg/320px-Gypsy_card_Lover_female.jpg" },
-            { name: "Házasság", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Gypsy_card_Marriage.jpg/320px-Gypsy_card_Marriage.jpg" },
-            { name: "Hűség", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Gypsy_card_Fidelity.jpg/320px-Gypsy_card_Fidelity.jpg" },
-            { name: "Remény", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Gypsy_card_Hope.jpg/320px-Gypsy_card_Hope.jpg" },
-            { name: "Pénz (Nagy pénz)", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Gypsy_card_Money.jpg/320px-Gypsy_card_Money.jpg" },
-            { name: "Kevés pénz", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Gypsy_card_Some_money.jpg/320px-Gypsy_card_Some_money.jpg" },
-            { name: "Ajándék", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Gypsy_card_Gift.jpg/320px-Gypsy_card_Gift.jpg" },
-            { name: "Örvendezés", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Gypsy_card_Merriment.jpg/320px-Gypsy_card_Merriment.jpg" },
-            { name: "Váratlan öröm", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Gypsy_card_Unexpected_joy.jpg/320px-Gypsy_card_Unexpected_joy.jpg" },
-            { name: "Szerencse", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Gypsy_card_Fortune.jpg/320px-Gypsy_card_Fortune.jpg" },
-            { name: "Utazás", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Gypsy_card_Journey.jpg/320px-Gypsy_card_Journey.jpg" },
-            { name: "Levél", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Gypsy_card_Letter.jpg/320px-Gypsy_card_Letter.jpg" },
-            { name: "Látogatás", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Gypsy_card_Visit.jpg/320px-Gypsy_card_Visit.jpg" },
-            { name: "Gyermek", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Gypsy_card_Child.jpg/320px-Gypsy_card_Child.jpg" },
-            { name: "Ház", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Gypsy_card_House.jpg/320px-Gypsy_card_House.jpg" },
-            { name: "Tisztesség", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Gypsy_card_Honesty.jpg/320px-Gypsy_card_Honesty.jpg" },
-            { name: "Katonaság", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Gypsy_card_Officer.jpg/320px-Gypsy_card_Officer.jpg" },
-            { name: "Bíró", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Gypsy_card_Judge.jpg/320px-Gypsy_card_Judge.jpg" },
-            { name: "Lelkész", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Gypsy_card_Ecclesiastic.jpg/320px-Gypsy_card_Ecclesiastic.jpg" },
-            { name: "Gond", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Gypsy_card_Sorrow.jpg/320px-Gypsy_card_Sorrow.jpg" },
-            { name: "Bánat", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Gypsy_card_Grief.jpg/320px-Gypsy_card_Grief.jpg" },
-            { name: "Bosszúság", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Gypsy_card_Jealousy.jpg/320px-Gypsy_card_Jealousy.jpg" },
-            { name: "Hamisság", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Gypsy_card_Falsehood.jpg/320px-Gypsy_card_Falsehood.jpg" },
-            { name: "Veszteség", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Gypsy_card_Loss.jpg/320px-Gypsy_card_Loss.jpg" },
-            { name: "Betegség", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Gypsy_card_Sickness.jpg/320px-Gypsy_card_Sickness.jpg" },
-            { name: "Halál", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Gypsy_card_Death.jpg/320px-Gypsy_card_Death.jpg" },
-            { name: "Özvegy ember", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Gypsy_card_Widower.jpg/320px-Gypsy_card_Widower.jpg" },
-            { name: "Özvegy nő", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Gypsy_card_Widow.jpg/320px-Gypsy_card_Widow.jpg" },
-            { name: "Várakozás", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Gypsy_card_Desire.jpg/320px-Gypsy_card_Desire.jpg" },
-            { name: "Örökség", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Gypsy_card_Inheritance.jpg/320px-Gypsy_card_Inheritance.jpg" },
-            { name: "Gondolat", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Gypsy_card_Thought.jpg/320px-Gypsy_card_Thought.jpg" },
-            { name: "Kellemetlenség", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Gypsy_card_Trouble.jpg/320px-Gypsy_card_Trouble.jpg" },
-            { name: "Szerencsétlenség", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Gypsy_card_Misfortune.jpg/320px-Gypsy_card_Misfortune.jpg" },
-            { name: "Állandóság", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Gypsy_card_Constancy.jpg/320px-Gypsy_card_Constancy.jpg" }
+            { name: "Szerelem", img: "20150215090925-szerelem.jpg" },
+            { name: "Veszteség", img: "veszteség.jpg" },
+            { name: "Váratlan öröm", img: "váratlan öröm.jpg" },
+            { name: "Vágy", img: "vágy.jpg" },
+            { name: "Üzenet", img: "üenet.jpg" },
+            { name: "Utazás", img: "utazás.jpg" },
+            { name: "Tolvaj", img: "tolvaj.jpg" },
+            { name: "Szomorúság", img: "szomorúság.jpg" },
+            { name: "Szerető", img: "szerető.jpg" },
+            { name: "Szerencsétlenség", img: "szerencsétlenség.jpg" },
+            { name: "Szerencse", img: "szerencse.jpg" },
+            { name: "Szerelmes nő", img: "szerelmes nő.jpg" },
+            { name: "Remény", img: "remény.jpg" },
+            { name: "Pénz", img: "pénz.jpg" },
+            { name: "Özvegyasszony", img: "özvegyasszony.jpg" },
+            { name: "Özvegy férfi", img: "özvegy férfi.jpg" },
+            { name: "Örvendezés", img: "övendezés.jpg" },
+            { name: "Levél", img: "levél.jpg" },
+            { name: "Lelkész", img: "lelkész.jpg" },
+            { name: "Látogatás", img: "látogatás.jpg" },
+            { name: "Kevés pénz", img: "kevés pénz.jpg" },
+            { name: "Katonatiszt", img: "katonatiszt.jpg" },
+            { name: "Hűség", img: "hűség.jpg" },
+            { name: "Házasság", img: "házasság.jpg" },
+            { name: "Ház", img: "ház.jpg" },
+            { name: "Hamisság", img: "hamisság.jpg" },
+            { name: "Halál", img: "halál.jpg" },
+            { name: "Gyermek", img: "gyermek.jpg" },
+            { name: "Gondolat", img: "gondolat.jpg" },
+            { name: "Féltékenység", img: "féltékenység.jpg" },
+            { name: "Ellenség", img: "ellenség.jpg" },
+            { name: "Bíró", img: "bíró.jpg" },
+            { name: "Betegség", img: "betegség.jpg" },
+            { name: "Állandóság", img: "álandóság.jpg" },
+            { name: "Ajándék", img: "ajándék.jpg" },
+            { name: "Bosszúság", img: "bosszúság.jpg" }
         ];
 
         let currentTab = 'quick';
@@ -233,7 +218,6 @@
             wrapper.innerHTML = `
                 <div class="card-inner">
                     <img src="${card.img}" alt="${card.name}">
-                    <div class="card-name-tag">${card.name}</div>
                 </div>
             `;
             return wrapper;
