@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion Cigánykártya - Mátrix Labor</title>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --accent-gold: #d4af37;
+            --accent-gold-glow: rgba(212, 175, 55, 0.4);
+            --text-color: #c5c6c7;
+        }
+
+        body {
+            background: radial-gradient(circle, #1a1c23 0%, #050508 100%);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px var(--accent-gold-glow);
+        }
+
+        /* Fülek (Tabs) Styling */
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-gold);
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-gold-glow);
+        }
+
+        /* Layouts */
+        .deck-container {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .deck-container.active {
+            display: flex;
+        }
+
+        /* 3 Lapos elrendezés */
+        #quickDraw {
+            margin-top: 30px;
+        }
+
+        #quickDraw .card-wrapper {
+            width: 160px;
+            height: 250px;
+        }
+
+        /* 36 Lapos Tabló elrendezés */
+        #fullTableau {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+            width: 100%;
+        }
+
+        #fullTableau .card-wrapper {
+            width: 100%;
+            height: 130px;
+        }
+
+        /* 3D Kártya Animáció */
+        .card-wrapper {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .card-wrapper.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            border: 2px solid var(--accent-gold);
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Hátlap */
+        .card-back {
+            background: linear-gradient(135deg, #1f2833 0%, #0b0c10 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-back::after {
+            content: "𓋹";
+            font-size: 2rem;
+            color: var(--accent-gold);
+            text-shadow: 0 0 5px var(--accent-gold);
+        }
+
+        /* Előlap */
+        .card-front {
+            background-color: #fff;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-label {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            color: var(--accent-gold);
+            font-size: 0.75rem;
+            padding: 4px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .action-btn {
+            margin-top: 25px;
+            background: transparent;
+            color: var(--accent-gold);
+            border: 2px solid var(--accent-gold);
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-gold-glow);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Aurys Cigánykártya</h1>
+
+    <!-- Menü fülek -->
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="switchTab('quick')">3 Lapos Gyorshúzás</button>
+        <button class="tab-btn" onclick="switchTab('full')">36 Lapos Tabló</button>
+    </div>
+
+    <!-- 3 Lapos Gyorshúzás Nézet -->
+    <div id="quickDraw" class="deck-container active"></div>
+
+    <!-- 36 Lapos Tabló Nézet -->
+    <div id="fullTableau" class="deck-container"></div>
+
+    <button class="action-btn" onclick="reshuffleCurrentTab()">Újrakeverés / Új leosztás</button>
+
+    <script>
+        // 36 Lapos Cigánykártya Pakli
+        const cardsData = [
+            { id: 1, name: "Anya", img: "https://picsum.photos/id/1025/300/450" },
+            { id: 2, name: "Ajándék", img: "https://picsum.photos/id/1060/300/450" },
+            { id: 3, name: "Bánat", img: "https://picsum.photos/id/1062/300/450" },
+            { id: 4, name: "Betegség", img: "https://picsum.photos/id/1069/300/450" },
+            { id: 5, name: "Bíró", img: "https://picsum.photos/id/1074/300/450" },
+            { id: 6, name: "Bosszúság", img: "https://picsum.photos/id/1084/300/450" },
+            { id: 7, name: "Eltévedt gyermek", img: "https://picsum.photos/id/1027/300/450" },
+            { id: 8, name: "Gond", img: "https://picsum.photos/id/1011/300/450" },
+            { id: 9, name: "Gyerekség", img: "https://picsum.photos/id/1012/300/450" },
+            { id: 10, name: "Halál", img: "https://picsum.photos/id/1020/300/450" },
+            { id: 11, name: "Hamissság", img: "https://picsum.photos/id/1024/300/450" },
+            { id: 12, name: "Házasság", img: "https://picsum.photos/id/1031/300/450" },
+            { id: 13, name: "Hűség", img: "https://picsum.photos/id/1062/300/450" },
+            { id: 14, name: "Katonaság", img: "https://picsum.photos/id/1070/300/450" },
+            { id: 15, name: "Kevés pénz", img: "https://picsum.photos/id/1080/300/450" },
+            { id: 16, name: "Kellemetlenség", img: "https://picsum.photos/id/1081/300/450" },
+            { id: 17, name: "Látogatás", img: "https://picsum.photos/id/1082/300/450" },
+            { id: 18, name: "Levelet kap", img: "https://picsum.photos/id/1083/300/450" },
+            { id: 19, name: "Lelkész", img: "https://picsum.photos/id/1015/300/450" },
+            { id: 20, name: "Nagy pénz", img: "https://picsum.photos/id/1016/300/450" },
+            { id: 21, name: "Örökség", img: "https://picsum.photos/id/1018/300/450" },
+            { id: 22, name: "Örvendezés", img: "https://picsum.photos/id/1019/300/450" },
+            { id: 23, name: "Özvegy ember", img: "https://picsum.photos/id/1021/300/450" },
+            { id: 24, name: "Özvegy nő", img: "https://picsum.photos/id/1022/300/450" },
+            { id: 25, name: "Remény", img: "https://picsum.photos/id/1023/300/450" },
+            { id: 26, name: "Szerelmes férfi", img: "https://picsum.photos/id/1025/300/450" },
+            { id: 27, name: "Szerelmes nő", img: "https://picsum.photos/id/1027/300/450" },
+            { id: 28, name: "Szerencse", img: "https://picsum.photos/id/1035/300/450" },
+            { id: 29, name: "Szomorúság", img: "https://picsum.photos/id/1038/300/450" },
+            { id: 30, name: "Tisztesség", img: "https://picsum.photos/id/1039/300/450" },
+            { id: 31, name: "Tolkaj", img: "https://picsum.photos/id/1040/300/450" },
+            { id: 32, name: "Utazás", img: "https://picsum.photos/id/1043/300/450" },
+            { id: 33, name: "Váratlan öröm", img: "https://picsum.photos/id/1044/300/450" },
+            { id: 34, name: "Várakozás", img: "https://picsum.photos/id/1045/300/450" },
+            { id: 35, name: "Veszteség", img: "https://picsum.photos/id/1049/300/450" },
+            { id: 36, name: "Végzet", img: "https://picsum.photos/id/1050/300/450" }
+        ];
+
+        let currentTab = 'quick';
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            const newArray = [...array];
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]];
+            }
+            return newArray;
+        }
+
+        function createCardElement(card) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-wrapper';
+            wrapper.onclick = () => wrapper.classList.toggle('flipped');
+
+            wrapper.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-back"></div>
+                    <div class="card-front">
+                        <img src="${card.img}" alt="${card.name}">
+                        <div class="card-label">${card.name}</div>
+                    </div>
+                </div>
+            `;
+            return wrapper;
+        }
+
+        function renderQuickDraw() {
+            const container = document.getElementById('quickDraw');
+            container.innerHTML = '';
+            const shuffled = shuffle(cardsData).slice(0, 3);
+            shuffled.forEach(card => {
+                container.appendChild(createCardElement(card));
+            });
+        }
+
+        function renderFullTableau() {
+            const container = document.getElementById('fullTableau');
+            container.innerHTML = '';
+            const shuffled = shuffle(cardsData);
+            shuffled.forEach(card => {
+                container.appendChild(createCardElement(card));
+            });
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.deck-container').forEach(c => c.classList.remove('active'));
+
+            if (tab === 'quick') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('quickDraw').classList.add('active');
+                renderQuickDraw();
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('fullTableau').classList.add('active');
+                renderFullTableau();
+            }
+        }
+
+        function reshuffleCurrentTab() {
+            if (currentTab === 'quick') {
+                renderQuickDraw();
+            } else {
+                renderFullTableau();
+            }
+        }
+
+        // Kezdő leosztás indításkor
+        renderQuickDraw();
+    </script>
+</body>
+</html>
