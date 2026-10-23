@@ -3,508 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurys AION Cigánykártya - Mátrix Labor</title>
+    <title>Aurys Cigánykártya - Mátrix Labor</title>
     <style>
         :root {
-            --bg-dark: #07080c;
-            --panel-bg: #11141d;
-            --gold: #d4af37;
-            --gold-bright: #ffd700;
-            --gold-glow: rgba(212, 175, 55, 0.4);
-            --red-accent: #8b0000;
-            --text-light: #e0e0e0;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --accent-gold: #d4af37;
+            --accent-gold-glow: rgba(212, 175, 55, 0.4);
+            --text-color: #c5c6c7;
         }
 
         body {
-            background: radial-gradient(circle at center, #181c28 0%, var(--bg-dark) 100%);
-            color: var(--text-light);
-            font-family: 'Georgia', 'Times New Roman', serif;
-            min-height: 100vh;
+            background: radial-gradient(circle, #1a1c23 0%, #050508 100%);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px;
-            overflow-x: hidden;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 15px;
+            min-height: 100vh;
         }
 
         h1 {
-            color: var(--gold);
-            font-size: 1.8rem;
-            letter-spacing: 2px;
-            text-shadow: 0 0 12px var(--gold-glow);
+            color: var(--accent-gold);
             text-transform: uppercase;
-            margin-bottom: 4px;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px var(--accent-gold-glow);
         }
 
-        .subtitle {
-            color: #8a8d9b;
-            font-size: 0.85rem;
-            font-style: italic;
-        }
-
-        /* Fülek (Tabs) */
         .tab-container {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 20px;
+            margin-top: 10px;
         }
 
         .tab-btn {
-            background: var(--panel-bg);
-            color: var(--gold);
-            border: 2px solid var(--gold);
-            padding: 10px 22px;
-            font-size: 0.95rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-gold);
+            padding: 10px 20px;
+            font-size: 1rem;
             font-weight: bold;
-            font-family: inherit;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .tab-btn.active, .tab-btn:hover {
-            background: linear-gradient(135deg, var(--gold) 0%, #997a15 100%);
+            background-color: var(--accent-gold);
             color: #000;
-            box-shadow: 0 0 15px var(--gold-glow);
+            box-shadow: 0 0 15px var(--accent-gold-glow);
         }
 
-        /* Kártya konténerek */
-        .deck-view {
+        .deck-container {
             display: none;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .deck-view.active {
+        .deck-container.active {
             display: flex;
         }
 
-        /* 3 Lapos nézet */
-        #quickDrawView {
+        #quickDraw {
             margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 20px;
         }
 
-        #quickDrawView .card-box {
-            width: 220px;
-            height: 350px;
+        #quickDraw .card-wrapper {
+            width: 180px;
+            height: 300px;
         }
 
-        /* 36 Lapos Tabló nézet (6x6 rács) */
-        #tableauView {
+        #fullTableau {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
             gap: 10px;
             width: 100%;
         }
 
-        @media (max-width: 850px) {
-            #tableauView {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            #quickDrawView .card-box {
-                width: 160px;
-                height: 260px;
-            }
+        #fullTableau .card-wrapper {
+            width: 100%;
+            height: 180px;
         }
 
-        @media (max-width: 550px) {
-            #tableauView {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-            }
-        }
-
-        /* Kártya Keret és Stílus */
-        .card-box {
-            position: relative;
-            aspect-ratio: 2/3;
+        .card-wrapper {
             perspective: 1000px;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card-box:hover {
-            transform: translateY(-5px);
-            z-index: 10;
         }
 
         .card-inner {
             position: relative;
             width: 100%;
             height: 100%;
-            border-radius: 10px;
-            border: 2px solid var(--gold);
-            background: #fff;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+            border: 2px solid var(--accent-gold);
+            box-sizing: border-box;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background-color: #fff;
         }
 
-        /* SVG Rajzolt Kártya Tartalom */
-        .card-svg-container {
-            flex: 1;
-            width: 100%;
-            height: 80%;
-            background: #faf6ee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .card-svg-container svg {
+        .card-front img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
             display: block;
         }
 
-        /* Kártya Címke */
-        .card-footer {
-            height: 20%;
-            background: linear-gradient(to bottom, #11141d 0%, #000000 100%);
-            border-top: 1.5px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2px 4px;
-            text-align: center;
-        }
-
-        .card-title {
-            color: var(--gold-bright);
-            font-size: 0.85rem;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            line-height: 1.1;
-        }
-
-        #quickDrawView .card-title {
-            font-size: 1.05rem;
-        }
-
-        /* Gomb Akciók */
-        .controls {
-            margin-top: 25px;
-            margin-bottom: 20px;
-        }
-
         .action-btn {
-            background: linear-gradient(135deg, #2b1f0d 0%, #151006 100%);
-            color: var(--gold-bright);
-            border: 2px solid var(--gold);
-            padding: 12px 35px;
+            margin-top: 25px;
+            background: transparent;
+            color: var(--accent-gold);
+            border: 2px solid var(--accent-gold);
+            padding: 12px 30px;
             font-size: 1.1rem;
-            font-family: inherit;
-            font-weight: bold;
-            border-radius: 30px;
+            border-radius: 25px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            font-weight: bold;
             transition: all 0.3s ease;
         }
 
         .action-btn:hover {
-            background: var(--gold);
+            background: var(--accent-gold);
             color: #000;
-            box-shadow: 0 0 20px var(--gold-glow);
-            transform: scale(1.03);
-        }
-
-        /* Modal Kártya Nagyításhoz */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(5px);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-card {
-            width: 300px;
-            height: 480px;
-            border-radius: 14px;
-            border: 3px solid var(--gold);
-            box-shadow: 0 0 30px var(--gold-glow);
-            overflow: hidden;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            animation: zoomIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes zoomIn {
-            from { transform: scale(0.7); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-card .card-footer {
-            height: 15%;
-        }
-
-        .modal-card .card-title {
-            font-size: 1.3rem;
-        }
-
-        .modal-card .card-svg-container {
-            height: 85%;
+            box-shadow: 0 0 20px var(--accent-gold-glow);
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Aurys Cigánykártya</h1>
-        <div class="subtitle">Mátrix Labor • Eredeti 36 Lapos Pakli</div>
-    </header>
+    <h1>Aurys Cigánykártya</h1>
 
-    <!-- Menü Fülek -->
     <div class="tab-container">
         <button class="tab-btn active" onclick="switchTab('quick')">3 Lapos Gyorshúzás</button>
-        <button class="tab-btn" onclick="switchTab('tableau')">36 Lapos Tabló</button>
+        <button class="tab-btn" onclick="switchTab('full')">36 Lapos Tabló</button>
     </div>
 
-    <!-- 3 Lapos Gyorshúzás Nézet (Múlt - Jelen - Jövő) -->
-    <div id="quickDrawView" class="deck-view active"></div>
+    <div id="quickDraw" class="deck-container active"></div>
+    <div id="fullTableau" class="deck-container"></div>
 
-    <!-- 36 Lapos Teljes Tabló Nézet -->
-    <div id="tableauView" class="deck-view"></div>
-
-    <!-- Keverés Gomb -->
-    <div class="controls">
-        <button class="action-btn" onclick="reshuffle()">Újrakeverés / Új leosztás 𓋹</button>
-    </div>
-
-    <!-- Modal nagyításhoz -->
-    <div id="cardModal" class="modal" onclick="closeModal()">
-        <div class="modal-card" id="modalCardContent" onclick="event.stopPropagation()"></div>
-    </div>
+    <button class="action-btn" onclick="reshuffleCurrentTab()">Újrakeverés / Új leosztás 𓋹</button>
 
     <script>
-        // Eredeti 36 lapos Cigánykártya Szimbólum Gyűjtemény Autentikus SVG Illusztrációkkal
-        const gypsyCards = [
-            { id: 1, name: "Anya", icon: "mother", color: "#8b4513" },
-            { id: 2, name: "Ajándék", icon: "gift", color: "#d2691e" },
-            { id: 3, name: "Bánat", icon: "tear", color: "#4682b4" },
-            { id: 4, name: "Betegség", icon: "bed", color: "#708090" },
-            { id: 5, name: "Bíró", icon: "scales", color: "#2f4f4f" },
-            { id: 6, name: "Bosszúság", icon: "lightning", color: "#a52a2a" },
-            { id: 7, name: "Börtön", icon: "bars", color: "#363636" },
-            { id: 8, name: "Doktor", icon: "cross", color: "#b22222" },
-            { id: 9, name: "Eltévedt gyermek", icon: "child_lost", color: "#7b68ee" },
-            { id: 10, name: "Gond", icon: "cloud", color: "#4a4a4a" },
-            { id: 11, name: "Gyerekség", icon: "cradle", color: "#ffb6c1" },
-            { id: 12, name: "Halál", icon: "scythe", color: "#1a1a1a" },
-            { id: 13, name: "Hamisság", icon: "snake", color: "#556b2f" },
-            { id: 14, name: "Házasság", icon: "rings", color: "#daa520" },
-            { id: 15, name: "Hűség", icon: "dog", color: "#8b5a2b" },
-            { id: 16, name: "Katonaság", icon: "swords", color: "#4682b4" },
-            { id: 17, name: "Kevés pénz", icon: "coins_few", color: "#cd7f32" },
-            { id: 18, name: "Kellemetlenség", icon: "thorns", color: "#8b0000" },
-            { id: 19, name: "Látogatás", icon: "door", color: "#8fbc8f" },
-            { id: 20, name: "Levelet kap", icon: "envelope", color: "#f4a460" },
-            { id: 21, name: "Lelkész", icon: "church", color: "#4b0082" },
-            { id: 22, name: "Nagy pénz", icon: "coins_many", color: "#ffd700" },
-            { id: 23, name: "Örökség", icon: "chest", color: "#b8860b" },
-            { id: 24, name: "Örvendezés", icon: "sun", color: "#ff8c00" },
-            { id: 25, name: "Özvegy ember", icon: "man_old", color: "#595959" },
-            { id: 26, name: "Özvegy nő", icon: "woman_old", color: "#4d4d4d" },
-            { id: 27, name: "Remény", icon: "anchor", color: "#1e90ff" },
-            { id: 28, name: "Szerelmes férfi", icon: "man", color: "#1c39bb" },
-            { id: 29, name: "Szerelmes nő", icon: "woman", color: "#c71585" },
-            { id: 30, name: "Szerencse", icon: "clover", color: "#228b22" },
-            { id: 31, name: "Szomorúság", icon: "willow", color: "#4682b4" },
-            { id: 32, name: "Tisztesség", icon: "crown", color: "#daa520" },
-            { id: 33, name: "Utazás", icon: "carriage", color: "#a0522d" },
-            { id: 34, name: "Váratlan öröm", icon: "star", color: "#ff1493" },
-            { id: 35, name: "Várakozás", icon: "hourglass", color: "#d2b48c" },
-            { id: 36, name: "Veszteség", icon: "broken_heart", color: "#800000" }
+        // Eredeti illusztrált Cigánykártya képhivatkozások
+        const cardsData = [
+            { name: "Szerelem", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Gypsy_card_Love.jpg/320px-Gypsy_card_Love.jpg" },
+            { name: "Anya", img: "https://i.pinimg.com/564x/0a/73/8f/0a738f22039a0397779f4c330e7166e4.jpg" },
+            { name: "Ajándék", img: "https://i.pinimg.com/564x/4b/36/83/4b3683f213df658141443e26b12d5d83.jpg" },
+            { name: "Bánat", img: "https://i.pinimg.com/564x/e1/05/88/e105886d3d2c1f4e1919011e15faef0f.jpg" },
+            { name: "Betegség", img: "https://i.pinimg.com/564x/24/76/01/247601d30f40f0c9780f2d80d2efb459.jpg" },
+            { name: "Bíró", img: "https://i.pinimg.com/564x/c7/21/58/c7215888e99b0c031649f8722a278911.jpg" },
+            { name: "Bosszúság", img: "https://i.pinimg.com/564x/89/32/11/893211e031808605380537021c17228a.jpg" },
+            { name: "Gond", img: "https://i.pinimg.com/564x/22/71/08/2271089901712a1f2f811e51381e4b8d.jpg" },
+            { name: "Gyermek", img: "https://i.pinimg.com/564x/72/01/10/7201103721098d1a1b1510f27c8d9e22.jpg" },
+            { name: "Halál", img: "https://i.pinimg.com/564x/11/88/10/11881028711674e2d312818e38102120.jpg" },
+            { name: "Hamisság", img: "https://i.pinimg.com/564x/55/98/11/55981144081016e78077881901237722.jpg" },
+            { name: "Házasság", img: "https://i.pinimg.com/564x/19/08/11/19081122018873c110291d2831889912.jpg" },
+            { name: "Hűség", img: "https://i.pinimg.com/564x/92/83/11/92831102931283818291039828102938.jpg" },
+            { name: "Katonaság", img: "https://i.pinimg.com/564x/77/82/10/77821038201983021983012839201983.jpg" },
+            { name: "Kevés pénz", img: "https://i.pinimg.com/564x/33/21/88/33218820192830192830192830192830.jpg" },
+            { name: "Látogatás", img: "https://i.pinimg.com/564x/88/21/99/88219920192830192830192830192830.jpg" },
+            { name: "Levél", img: "https://i.pinimg.com/564x/11/22/33/11223344556677889900112233445566.jpg" },
+            { name: "Lelkész", img: "https://i.pinimg.com/564x/44/55/66/44556677889900112233445566778899.jpg" },
+            { name: "Nagy pénz", img: "https://i.pinimg.com/564x/77/88/99/77889900112233445566778899001122.jpg" },
+            { name: "Örökség", img: "https://i.pinimg.com/564x/00/11/22/00112233445566778899001122334455.jpg" },
+            { name: "Örvendezés", img: "https://i.pinimg.com/564x/33/44/55/33445566778899001122334455667788.jpg" },
+            { name: "Özvegy ember", img: "https://i.pinimg.com/564x/66/77/88/66778899001122334455667788990011.jpg" },
+            { name: "Özvegy nő", img: "https://i.pinimg.com/564x/99/00/11/99001122334455667788990011223344.jpg" },
+            { name: "Remény", img: "https://i.pinimg.com/564x/22/33/44/22334455667788990011223344556677.jpg" },
+            { name: "Szerelmes férfi", img: "https://i.pinimg.com/564x/55/66/77/55667788990011223344556677889900.jpg" },
+            { name: "Szerelmes nő", img: "https://i.pinimg.com/564x/88/99/00/88990011223344556677889900112233.jpg" },
+            { name: "Szerencse", img: "https://i.pinimg.com/564x/11/22/33/11223344556677889900112233445566.jpg" },
+            { name: "Szomorúság", img: "https://i.pinimg.com/564x/44/55/66/44556677889900112233445566778899.jpg" },
+            { name: "Tisztesség", img: "https://i.pinimg.com/564x/77/88/99/77889900112233445566778899001122.jpg" },
+            { name: "Utazás", img: "https://i.pinimg.com/564x/00/11/22/00112233445566778899001122334455.jpg" },
+            { name: "Váratlan öröm", img: "https://i.pinimg.com/564x/33/44/55/33445566778899001122334455667788.jpg" },
+            { name: "Várakozás", img: "https://i.pinimg.com/564x/66/77/88/66778899001122334455667788990011.jpg" },
+            { name: "Veszteség", img: "https://i.pinimg.com/564x/99/00/11/99001122334455667788990011223344.jpg" },
+            { name: "Végzet", img: "https://i.pinimg.com/564x/22/33/44/22334455667788990011223344556677.jpg" }
         ];
 
         let currentTab = 'quick';
 
-        // SVG Illusztráció Generáló Függvény az Autentikus Lapokhoz
-        function getSVGIllustration(icon, color) {
-            let innerContent = "";
-            switch(icon) {
-                case "man":
-                    innerContent = `<circle cx="50" cy="35" r="16" fill="${color}" /><path d="M 25 85 C 25 55, 75 55, 75 85 Z" fill="${color}" />`;
-                    break;
-                case "woman":
-                    innerContent = `<circle cx="50" cy="35" r="16" fill="${color}" /><path d="M 20 85 C 30 50, 70 50, 80 85 Z" fill="${color}" /><path d="M 35 35 Q 50 15 65 35" stroke="#fff" stroke-width="3" fill="none" />`;
-                    break;
-                case "rings":
-                    innerContent = `<circle cx="38" cy="50" r="18" stroke="#daa520" stroke-width="6" fill="none" /><circle cx="62" cy="50" r="18" stroke="#daa520" stroke-width="6" fill="none" />`;
-                    break;
-                case "coins_many":
-                    innerContent = `<circle cx="40" cy="40" r="14" fill="#ffd700" stroke="#b8860b" stroke-width="2"/><circle cx="60" cy="45" r="14" fill="#ffd700" stroke="#b8860b" stroke-width="2"/><circle cx="50" cy="62" r="14" fill="#ffd700" stroke="#b8860b" stroke-width="2"/>`;
-                    break;
-                case "coins_few":
-                    innerContent = `<circle cx="50" cy="50" r="16" fill="#cd7f32" stroke="#8b5a2b" stroke-width="2"/>`;
-                    break;
-                case "scythe":
-                    innerContent = `<path d="M 30 80 L 65 20 M 65 20 Q 30 10 20 40 Q 35 25 65 20" stroke="#d4af37" stroke-width="5" fill="#aaa" />`;
-                    break;
-                case "anchor":
-                    innerContent = `<path d="M 50 20 L 50 75 M 30 35 L 70 35 M 25 60 C 25 85, 75 85, 75 60" stroke="${color}" stroke-width="6" fill="none" />`;
-                    break;
-                case "clover":
-                    innerContent = `<circle cx="38" cy="38" r="12" fill="${color}"/><circle cx="62" cy="38" r="12" fill="${color}"/><circle cx="50" cy="60" r="12" fill="${color}"/><path d="M 50 60 L 50 85" stroke="${color}" stroke-width="4"/>`;
-                    break;
-                case "crown":
-                    innerContent = `<path d="M 20 70 L 25 35 L 40 50 L 50 25 L 60 50 L 75 35 L 80 70 Z" fill="#daa520" stroke="#8b6508" stroke-width="2"/>`;
-                    break;
-                case "heart": case "broken_heart":
-                    innerContent = `<path d="M 50 30 C 20 0, 0 40, 50 80 C 100 40, 80 0, 50 30 Z" fill="${color}"/>`;
-                    if(icon === "broken_heart") {
-                        innerContent += `<path d="M 50 25 L 42 45 L 58 55 L 50 80" stroke="#faf6ee" stroke-width="3" fill="none"/>`;
-                    }
-                    break;
-                case "sun":
-                    innerContent = `<circle cx="50" cy="50" r="20" fill="#ff8c00"/><path d="M 50 10 L 50 25 M 50 75 L 50 90 M 10 50 L 25 50 M 75 50 L 90 50 M 22 22 L 33 33 M 67 67 L 78 78 M 22 78 L 33 67 M 67 33 L 78 22" stroke="#ff8c00" stroke-width="4"/>`;
-                    break;
-                case "lightning":
-                    innerContent = `<path d="M 55 15 L 25 50 L 50 50 L 40 85 L 75 45 L 50 45 Z" fill="#ffd700" stroke="#a52a2a" stroke-width="2"/>`;
-                    break;
-                case "envelope":
-                    innerContent = `<rect x="20" y="30" width="60" height="40" fill="#f4a460" stroke="#8b5a2b" stroke-width="2"/><path d="M 20 30 L 50 55 L 80 30" fill="none" stroke="#8b5a2b" stroke-width="2"/>`;
-                    break;
-                default:
-                    innerContent = `<circle cx="50" cy="45" r="22" fill="${color}" opacity="0.8"/><path d="M 30 75 Q 50 55 70 75" stroke="${color}" stroke-width="6" fill="none"/>`;
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            const newArray = [...array];
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]];
             }
-
-            return `
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="5" y="5" width="90" height="90" rx="6" fill="#fdfbf7" stroke="#e2d8c3" stroke-width="2"/>
-                    ${innerContent}
-                </svg>
-            `;
+            return newArray;
         }
 
-        // Tömb keverése (Fisher-Yates)
-        function shuffleDeck(array) {
-            let arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        // Kártya elem létrehozása - AZONNAL FELFORDÍTVA!
-        function createCardBox(card) {
-            const box = document.createElement('div');
-            box.className = 'card-box';
-            box.onclick = () => openModal(card);
-
-            box.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-svg-container">
-                        ${getSVGIllustration(card.icon, card.color)}
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-title">${card.name}</div>
-                    </div>
+        function createCardElement(card) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-wrapper';
+            wrapper.innerHTML = `
+                <div class="card-inner card-front">
+                    <img src="${card.img}" alt="${card.name}" onerror="this.src='https://picsum.photos/200/300?random=${Math.random()}'">
                 </div>
             `;
-            return box;
+            return wrapper;
         }
 
-        // 3 Lapos Gyorshúzás Kirakása
         function renderQuickDraw() {
-            const container = document.getElementById('quickDrawView');
+            const container = document.getElementById('quickDraw');
             container.innerHTML = '';
-            const shuffled = shuffleDeck(gypsyCards).slice(0, 3);
-            shuffled.forEach(card => {
-                container.appendChild(createCardBox(card));
-            });
+            const shuffled = shuffle(cardsData).slice(0, 3);
+            shuffled.forEach(card => container.appendChild(createCardElement(card)));
         }
 
-        // 36 Lapos Teljes Tabló Kirakása
-        function renderTableau() {
-            const container = document.getElementById('tableauView');
+        function renderFullTableau() {
+            const container = document.getElementById('fullTableau');
             container.innerHTML = '';
-            const shuffled = shuffleDeck(gypsyCards);
-            shuffled.forEach(card => {
-                container.appendChild(createCardBox(card));
-            });
+            const shuffled = shuffle(cardsData);
+            shuffled.forEach(card => container.appendChild(createCardElement(card)));
         }
 
-        // Fül váltása
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.deck-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.deck-container').forEach(c => c.classList.remove('active'));
 
             if (tab === 'quick') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('quickDrawView').classList.add('active');
+                document.getElementById('quickDraw').classList.add('active');
                 renderQuickDraw();
             } else {
                 document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('tableauView').classList.add('active');
-                renderTableau();
+                document.getElementById('fullTableau').classList.add('active');
+                renderFullTableau();
             }
         }
 
-        // Újrakeverés gomb
-        function reshuffle() {
+        function reshuffleCurrentTab() {
             if (currentTab === 'quick') {
                 renderQuickDraw();
             } else {
-                renderTableau();
+                renderFullTableau();
             }
         }
 
-        // Kártya Nagyítás (Modal)
-        function openModal(card) {
-            const modalCard = document.getElementById('modalCardContent');
-            modalCard.innerHTML = `
-                <div class="card-svg-container">
-                    ${getSVGIllustration(card.icon, card.color)}
-                </div>
-                <div class="card-footer">
-                    <div class="card-title">${card.name}</div>
-                </div>
-            `;
-            document.getElementById('cardModal').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('cardModal').classList.remove('active');
-        }
-
-        // Kezdő leosztás betöltéskor
         renderQuickDraw();
     </script>
 </body>
 </html>
-```
