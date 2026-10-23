@@ -159,44 +159,12 @@
     <button class="action-btn" onclick="reshuffleCurrentTab()">Újrakeverés / Új leosztás 𓋹</button>
 
     <script>
-        // A te általad feltöltött pontos fájlnevek a GitHub repóban
+        // A feltöltött számozott képek gyűjteménye (c1.jpg - c37.jpg)
         const cardsData = [
-            { name: "Szerelem", img: "20150215090925-szerelem.jpg" },
-            { name: "Veszteség", img: "veszteség.jpg" },
-            { name: "Váratlan öröm", img: "váratlan öröm.jpg" },
-            { name: "Vágy", img: "vágy.jpg" },
-            { name: "Üzenet", img: "üenet.jpg" },
-            { name: "Utazás", img: "utazás.jpg" },
-            { name: "Tolvaj", img: "tolvaj.jpg" },
-            { name: "Szomorúság", img: "szomorúság.jpg" },
-            { name: "Szerető", img: "szerető.jpg" },
-            { name: "Szerencsétlenség", img: "szerencsétlenség.jpg" },
-            { name: "Szerencse", img: "szerencse.jpg" },
-            { name: "Szerelmes nő", img: "szerelmes nő.jpg" },
-            { name: "Remény", img: "remény.jpg" },
-            { name: "Pénz", img: "pénz.jpg" },
-            { name: "Özvegyasszony", img: "özvegyasszony.jpg" },
-            { name: "Özvegy férfi", img: "özvegy férfi.jpg" },
-            { name: "Örvendezés", img: "övendezés.jpg" },
-            { name: "Levél", img: "levél.jpg" },
-            { name: "Lelkész", img: "lelkész.jpg" },
-            { name: "Látogatás", img: "látogatás.jpg" },
-            { name: "Kevés pénz", img: "kevés pénz.jpg" },
-            { name: "Katonatiszt", img: "katonatiszt.jpg" },
-            { name: "Hűség", img: "hűség.jpg" },
-            { name: "Házasság", img: "házasság.jpg" },
-            { name: "Ház", img: "ház.jpg" },
-            { name: "Hamisság", img: "hamisság.jpg" },
-            { name: "Halál", img: "halál.jpg" },
-            { name: "Gyermek", img: "gyermek.jpg" },
-            { name: "Gondolat", img: "gondolat.jpg" },
-            { name: "Féltékenység", img: "féltékenység.jpg" },
-            { name: "Ellenség", img: "ellenség.jpg" },
-            { name: "Bíró", img: "bíró.jpg" },
-            { name: "Betegség", img: "betegség.jpg" },
-            { name: "Állandóság", img: "álandóság.jpg" },
-            { name: "Ajándék", img: "ajándék.jpg" },
-            { name: "Bosszúság", img: "bosszúság.jpg" }
+            "c1.jpg", "c2.jpg", "c3.jpg", "c4.jpg", "c5.jpg", "c6.jpg", "c7.jpg", "c8.jpg", "c9.jpg", "c10.jpg",
+            "c11.jpg", "c12.jpg", "c13.jpg", "c14.jpg", "c15.jpg", "c16.jpg", "c17.jpg", "c18.jpg", "c19.jpg", "c20.jpg",
+            "c21.jpg", "c22.jpg", "c23.jpg", "c24.jpg", "c26.jpg", "c27.jpg", "c28.jpg", "c29.jpg", "c30.jpg",
+            "c31.jpg", "c32.jpg", "c33.jpg", "c34.jpg", "c35.jpg", "c36.jpg", "c37.jpg"
         ];
 
         let currentTab = 'quick';
@@ -212,12 +180,12 @@
             return newArray;
         }
 
-        function createCardElement(card) {
+        function createCardElement(imgSrc) {
             const wrapper = document.createElement('div');
             wrapper.className = 'card-wrapper';
             wrapper.innerHTML = `
                 <div class="card-inner">
-                    <img src="${card.img}" alt="${card.name}">
+                    <img src="./${imgSrc}" alt="Cigánykártya lap">
                 </div>
             `;
             return wrapper;
@@ -227,14 +195,14 @@
             const container = document.getElementById('quickDraw');
             container.innerHTML = '';
             const shuffled = shuffle(cardsData).slice(0, 3);
-            shuffled.forEach(card => container.appendChild(createCardElement(card)));
+            shuffled.forEach(imgSrc => container.appendChild(createCardElement(imgSrc)));
         }
 
         function renderFullTableau() {
             const container = document.getElementById('fullTableau');
             container.innerHTML = '';
             const shuffled = shuffle(cardsData);
-            shuffled.forEach(card => container.appendChild(createCardElement(card)));
+            shuffled.forEach(imgSrc => container.appendChild(createCardElement(imgSrc)));
         }
 
         function switchTab(tab) {
